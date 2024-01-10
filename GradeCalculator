@@ -1,0 +1,84 @@
+package SkyBug_tasks;
+
+import java.util.InputMismatchException;
+import java.util.Scanner;
+
+public class GradeCalculator {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+
+        System.out.println("Enter the number of subjects:");
+        int numSubjects = getValidInput(scanner);
+
+        // Input marks for each subject
+        int[] subjectMarks = new int[numSubjects];
+        for (int i = 0; i < numSubjects; i++) {
+            System.out.println("Enter marks for Subject " + (i + 1) + ":");
+            subjectMarks[i] = getValidInput(scanner);
+        }
+
+        // Calculate total marks
+        int totalMarks = calculateTotalMarks(subjectMarks);
+
+        // Calculate average percentage
+        double averagePercentage = calculateAveragePercentage(totalMarks, numSubjects);
+
+        // Assign grades based on average percentage
+        char grade = calculateGrade(averagePercentage);
+
+        // Display results
+        displayResults(totalMarks, averagePercentage, grade);
+
+        scanner.close();
+    }
+
+    private static int getValidInput(Scanner scanner) {
+        int input = 0;
+        boolean isValid = false;
+
+        do {
+            try {
+                input = scanner.nextInt();
+                isValid = true;
+            } catch (InputMismatchException e) {
+                System.out.println("Only Integer numbers are allowed. Please enter the Subject mark:");
+                scanner.next(); // Consume the invalid input
+            }
+        } while (!isValid);
+
+        return input;
+    }
+
+    private static int calculateTotalMarks(int[] subjectMarks) {
+        int totalMarks = 0;
+        for (int marks : subjectMarks) {
+            totalMarks += marks;
+        }
+        return totalMarks;
+    }
+
+    private static double calculateAveragePercentage(int totalMarks, int numSubjects) {
+        return (double) totalMarks / numSubjects;
+    }
+
+    private static char calculateGrade(double averagePercentage) {
+        if (averagePercentage >= 90) {
+            return 'A';
+        } else if (averagePercentage >= 80) {
+            return 'B';
+        } else if (averagePercentage >= 70) {
+            return 'C';
+        } else if (averagePercentage >= 60) {
+            return 'D';
+        } else {
+            return 'F';
+        }
+    }
+
+    private static void displayResults(int totalMarks, double averagePercentage, char grade) {
+        System.out.println("\nResults:");
+        System.out.println("Total Marks: " + totalMarks);
+        System.out.println("Average Percentage: " + averagePercentage + "%");
+        System.out.println("Grade: " + grade);
+    }
+}
