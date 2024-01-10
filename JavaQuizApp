@@ -1,0 +1,115 @@
+package SkyBug_tasks;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Scanner;
+import java.util.Timer;
+import java.util.TimerTask;
+
+class QuizQuestion {
+    String question;
+    ArrayList<String> options;
+    int correctOption;
+
+    public QuizQuestion(String question, ArrayList<String> options, int correctOption) {
+        this.question = question;
+        this.options = options;
+        this.correctOption = correctOption;
+    }
+}
+
+public class JavaQuizApp {
+    private static ArrayList<QuizQuestion> quizQuestions;
+    private static int userScore = 0;
+    private static int currentQuestionIndex = 0;
+
+    public static void main(String[] args) {
+        initializeQuiz();
+        startQuiz();
+    }
+
+    private static void initializeQuiz() {
+        // Initialize quiz questions
+        quizQuestions = new ArrayList<>();
+        quizQuestions.add(new QuizQuestion("What is the capital of Java?",
+                new ArrayList<>(List.of("Jakarta", "Bali", "Surabaya", "Bandung")), 0));
+        quizQuestions.add(new QuizQuestion("What is the output of the following code snippet?\n\n" +
+                "```java\n" +
+                "int x = 5;\n" +
+                "System.out.println(x++);\n" +
+                "```",
+                new ArrayList<>(List.of("5", "6", "4", "0")), 0));
+        quizQuestions.add(new QuizQuestion("Which of the following is not a valid access modifier in Java?",
+                new ArrayList<>(List.of("public", "package-private", "internal", "protected")), 2));
+        quizQuestions.add(new QuizQuestion("What is the purpose of the 'super' keyword in Java?",
+                new ArrayList<>(List.of("To call the superclass constructor", "To access superclass members",
+                        "To refer to the current object", "To define a constant")), 1));
+        quizQuestions.add(new QuizQuestion("What is the difference between '=='' and '.equals()' in Java when comparing strings?",
+                new ArrayList<>(List.of("They are interchangeable", "'==' compares references, '.equals()' compares content",
+                        "'==' compares content, '.equals()' compares references", "There is no difference")), 1));
+        // Add more questions as needed
+
+        // Shuffle the order of options for each question
+        for (QuizQuestion question : quizQuestions) {
+            Collections.shuffle(question.options);
+        }
+    }
+
+    private static void startQuiz() {
+        Scanner scanner = new Scanner(System.in);
+
+        for (QuizQuestion question : quizQuestions) {
+            displayQuestion(question);
+            startTimer(10); // Set timer for 10 seconds to answer each question
+
+            int userAnswer = scanner.nextInt();
+
+            if (userAnswer == question.correctOption) {
+                System.out.println("Correct!\n");
+                userScore++;
+            } else {
+                System.out.println("Wrong Answer. The correct answer is: " + question.options.get(question.correctOption) + "\n");
+            }
+
+            currentQuestionIndex++;
+        }
+
+        displayResult();
+        scanner.close();
+    }
+
+    private static void displayQuestion(QuizQuestion question) {
+        System.out.println(question.question);
+        for (int i = 0; i < question.options.size(); i++) {
+            System.out.println((i + 1) + ". " + question.options.get(i));
+        }
+        System.out.print("Your answer (1-" + question.options.size() + "): ");
+    }
+
+    private static void startTimer(int seconds) {
+        Timer timer = new Timer();
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                System.out.println("\nTime's up!");
+                currentQuestionIndex++;
+                timer.cancel(); // Stop the timer
+            }
+        }, seconds * 1000);
+    }
+
+    private static void displayResult() {
+        System.out.println("Quiz Completed!");
+        System.out.println("Your Score: " + userScore + "/" + quizQuestions.size());
+
+        // Display correct/incorrect answers
+        for (int i = 0; i < quizQuestions.size(); i++) {
+            QuizQuestion question = quizQuestions.get(i);
+            System.out.println("Q" + (i + 1) + ": " + question.question);
+            System.out.println("Correct Answer: " + question.options.get(question.correctOption));
+            System.out.println("Your Answer: " + question.options.get(userScore));
+            System.out.println();
+        }
+    }
+}
